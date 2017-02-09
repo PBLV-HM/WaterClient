@@ -175,3 +175,7 @@ hr {
     height: 300px;
     width: 500px;
 }
+
+.angular-google-map-container { 
+    height: 400px; 
+}

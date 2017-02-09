@@ -1,5 +1,11 @@
-var app = angular.module("myApp", ["ngRoute"]);
-
+var app = angular.module("myApp", ["ngRoute", 'uiGmapgoogle-maps']);
+app.config(function(uiGmapGoogleMapApiProvider) {
+    uiGmapGoogleMapApiProvider.configure({
+        key: 'AIzaSyACv6br_74o_Gk-2mX64cGeG7w8xyIu1vQ',
+        v: '3.27', //defaults to latest 3.X anyhow
+        libraries: 'weather,geometry,visualization'
+    });
+})
 app.config(function($routeProvider) {
     $routeProvider
         .when("/", {
@@ -58,7 +64,10 @@ app.controller("authCtrl", function($scope, $http, sharedProperties, $window, $r
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/auth',
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa($scope.loginUser.username, $scope.loginUser.password) }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + getBtoa($scope.loginUser.username, $scope.loginUser.password)
+            }
         }).success(function(data, status, headers, config) {
 
             setCockie("token", data.token);
@@ -96,7 +105,9 @@ app.controller("registrationCtrl", function($scope, $http) {
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/user',
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             data: userData
         }).success(function(data, status, headers, config) {
             $scope.user = null;
@@ -120,7 +131,10 @@ app.controller("devConfigCtrl", function($scope, $http) {
     $http({
         url: 'http://www.hmpblv.markab.uberspace.de:63837/device',
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') }
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+        }
     }).success(function(data, status, headers, config) {
         $scope.devices = data;
     }).error(function(data, status, headers, config) {
@@ -135,7 +149,10 @@ app.controller("devConfigCtrl", function($scope, $http) {
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/device/' + device.id,
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+            }
         }).success(function(data, status, headers, config) {
             $scope.selectedDevice = false;
         }).error(function(data, status, headers, config) {
@@ -147,8 +164,14 @@ app.controller("devConfigCtrl", function($scope, $http) {
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/device/' + device.id,
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') },
-            data: { 'name': device.name, 'active': device.active }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+            },
+            data: {
+                'name': device.name,
+                'active': device.active
+            }
         }).success(function(data, status, headers, config) {
             $scope.selectedDevice = false;
         }).error(function(data, status, headers, config) {
@@ -179,9 +202,17 @@ app.controller("devConfigCtrl", function($scope, $http) {
     };
 });
 
-app.controller("reportingCtrl", function($scope, $http) {
+app.controller("reportingCtrl", function($scope, $http, uiGmapGoogleMapApi) {
 
-    initMap();
+    $scope.map = {
+        center: {
+            latitude: 0,// 48.155357,
+            longitude: 0//11.555906
+        },
+        zoom: 8
+    };
+
+    $scope.markers = [];
 
     $http({
         url: 'http://www.hmpblv.markab.uberspace.de:63837/group',
@@ -207,6 +238,13 @@ app.controller("reportingCtrl", function($scope, $http) {
             }
         }).success(function(data, status, headers, config) {
             $scope.isevaluated = true;
+
+            console.log("Received data", data);
+
+            //Set markers
+            $scope.markers = data.coords;
+            
+
             FusionCharts.ready(function() {
                 var degreeChart = new FusionCharts({
                     "type": "line",
@@ -286,7 +324,10 @@ app.controller("groupConfigCtrl", function($scope, $http) {
     $http({
         url: 'http://www.hmpblv.markab.uberspace.de:63837/group',
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') }
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+        }
     }).success(function(data, status, headers, config) {
         $scope.groups = data;
     }).error(function(data, status, headers, config) {
@@ -303,7 +344,10 @@ app.controller("groupConfigCtrl", function($scope, $http) {
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/group/' + $scope.selectedGroup.id,
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+            }
         }).success(function(data, status, headers, config) {
             $scope.selectedGroup = false;
         }).error(function(data, status, headers, config) {
@@ -316,8 +360,14 @@ app.controller("groupConfigCtrl", function($scope, $http) {
         $http({
             url: 'http://www.hmpblv.markab.uberspace.de:63837/group/' + $scope.selectedGroup.id,
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '') },
-            data: { 'name': $scope.selectedGroup.name, 'state': $scope.selectedGroup.state }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+            },
+            data: {
+                'name': $scope.selectedGroup.name,
+                'state': $scope.selectedGroup.state
+            }
         }).success(function(data, status, headers, config) {
             $scope.selectedGroup = false;
         }).error(function(data, status, headers, config) {
@@ -361,7 +411,10 @@ app.controller("groupConfigCtrl", function($scope, $http) {
                     'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
                 },
                 // TODO edit normal pegel
-                data: { 'grpId': $scope.selectedGroup.id, 'normPeg': device.normal }
+                data: {
+                    'grpId': $scope.selectedGroup.id,
+                    'normPeg': device.normal
+                }
             }).success(function(data, status, headers, config) {
                 $('#addDevice').modal("hide");
                 $scope.devices.push(device);
