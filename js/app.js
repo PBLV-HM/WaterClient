@@ -181,6 +181,8 @@ app.controller("devConfigCtrl", function($scope, $http) {
 
 app.controller("reportingCtrl", function($scope, $http) {
 
+    initMap();
+
     $http({
         url: 'http://www.hmpblv.markab.uberspace.de:63837/group',
         method: 'GET',
@@ -194,17 +196,17 @@ app.controller("reportingCtrl", function($scope, $http) {
         console.log(status);
     });
 
-    $scope.selectedGroupChanged = function() {
-        var d;
+    $scope.evaluate = function() {
+
         $http({
-            url: 'http://www.hmpblv.markab.uberspace.de:63837/group/' + $scope.selectedGroup.id + '/2',
+            url: 'http://www.hmpblv.markab.uberspace.de:63837/group/' + $scope.selectedGroup.id + '/' + $scope.intervalList,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
             }
         }).success(function(data, status, headers, config) {
-
+            $scope.isevaluated = true;
             FusionCharts.ready(function() {
                 var degreeChart = new FusionCharts({
                     "type": "line",
@@ -256,7 +258,16 @@ app.controller("reportingCtrl", function($scope, $http) {
                             "labeldisplay": "rotate",
                             "slantlabels": "1"
                         },
-                        "data": data.dist
+                        "data": data.dist,
+                        "trendlines": [{
+                            "line": [{
+                                "startvalue": "0",
+                                "color": "#1aaf5d",
+                                "valueOnRight": "1",
+                                "displayvalue": "Normal Pegel",
+                                "thickness": "2"
+                            }]
+                        }]
                     }
                 });
 
@@ -269,27 +280,6 @@ app.controller("reportingCtrl", function($scope, $http) {
             console.log(status);
         });
     }
-
-
-    /*$http({
-        method: "GET",
-        url: "data/chart.json"
-    }).success(function(data, status, headers, config) {
-        FusionCharts.ready(function() {
-            var revenueChart = new FusionCharts({
-                "type": "line",
-                "renderAt": "chartContainer",
-                "width": "100%",
-                "height": "300",
-                "dataFormat": "json",
-                "dataSource": data
-            });
-
-            revenueChart.render();
-        });
-    }).error(function(data, status, headers, config) {
-        console.log(status);
-    });*/
 });
 
 app.controller("groupConfigCtrl", function($scope, $http) {
@@ -348,6 +338,7 @@ app.controller("groupConfigCtrl", function($scope, $http) {
             data: $scope.newGroup
         }).success(function(data, status, headers, config) {
             $('#addGroup').modal("hide");
+            $scope.groups.push($scope.newGroup);
             // reset field
             $scope.newGroupName = "";
         }).error(function(data, status, headers, config) {
@@ -360,22 +351,27 @@ app.controller("groupConfigCtrl", function($scope, $http) {
         $scope.selectedGroup = false;
     };
 
-    $scope.addDevice = function(device) {
-        $http({
-            url: 'http://www.hmpblv.markab.uberspace.de:63837/device/join/' + device.id,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
-            },
-            // TODO edit normal pegel
-            data: { 'grpId': $scope.selectedGroup.id, 'normPeg': '60' }
-        }).success(function(data, status, headers, config) {
-            $('#addDevice').modal("hide");
-            $scope.devices.push(device);
-        }).error(function(data, status, headers, config) {
-            console.log(status);
-        });
+    $scope.addDevice = function(device, index) {
+        if (device.normal > 0) {
+            $http({
+                url: 'http://www.hmpblv.markab.uberspace.de:63837/device/join/' + device.id,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + getBtoa(getCockie('token'), '')
+                },
+                // TODO edit normal pegel
+                data: { 'grpId': $scope.selectedGroup.id, 'normPeg': device.normal }
+            }).success(function(data, status, headers, config) {
+                $('#addDevice').modal("hide");
+                $scope.devices.push(device);
+                $scope.devsNotInGroup.splice(index, 1);
+            }).error(function(data, status, headers, config) {
+                console.log(status);
+            });
+        } else {
+            $scope.msg = 'Sie müssen einen korrekten normal Pegel eingeben!';
+        }
     };
 
     $scope.removeDevice = function(device, index) {
@@ -388,6 +384,7 @@ app.controller("groupConfigCtrl", function($scope, $http) {
             }
         }).success(function(data, status, headers, config) {
             $scope.devices.splice(index, 1);
+            $scope.devsNotInGroup.push(device);
         }).error(function(data, status, headers, config) {
             console.log(data, status);
         });

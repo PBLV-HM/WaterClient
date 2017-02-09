@@ -133,3 +133,45 @@ hr {
 .map {
     width: 100%;
 }
+
+.member-photo {
+    height: 70px;
+    width: 70px;
+    border-radius: 35px;
+    border: 1px solid #000;
+    display: inline-block;
+    margin-right: 25px;
+    background-attachment: scroll;
+    background-position: center;
+    background-size: cover;
+}
+
+.member-photo:hover {
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+}
+
+#member1 {
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+    background-image: url(../img/kevin.jpg);
+}
+
+#member2 {
+    background-image: url(../img/marianus.jpg);
+}
+
+#member3 {
+    background-image: url(../img/florian.jpg);
+}
+
+#member4 {
+    background-image: url(../img/markus.jpg);
+}
+
+#map {
+    height: 300px;
+    width: 500px;
+}

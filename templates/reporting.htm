@@ -1,15 +1,44 @@
 <div class="container">
     <h1>Reporting</h1>
-    <h3>Gruppenauswahl</h3>
 
     <div class="row">
-        <div class="col-xs-6">
-            <select class="form-control" ng-options="group.name for group in groupList" ng-model="selectedGroup" ng-change="selectedGroupChanged()"></select>
+        <div class="col-sm-4">
+            <label>Gruppe auswählen</label>
+            <select class="form-control" ng-options="group.name for group in groupList" ng-model="selectedGroup"></select>
+        </div>
+        <div class="col-sm-4">
+            <label>Interval auswählen</label>
+            <select class="form-control" ng-model="intervalList">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>15</option>
+                <option>20</option>
+                <option>25</option>
+                <option>30</option>
+                <option>35</option>
+                <option>40</option>
+                <option>45</option>
+                <option>50</option>
+                <option>55</option>
+                <option>60</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-primary form-control" ng-click="evaluate()">auswerten</button>
         </div>
     </div>
     <br>
     <br>
-    <div class="row" ng-show="selectedGroup">
+    <div class="row" ng-show="isevaluated">
         <div class="col-sm-12 ">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -52,7 +81,5 @@
             </div>
         </div>
     </div>
-
-    <p>{{msg}}</p>
 
 </div>
