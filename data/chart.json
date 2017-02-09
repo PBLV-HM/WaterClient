@@ -1,0 +1,58 @@
+ {
+     "chart": {
+         "caption": "Monthly Report",
+         "subCaption": "moPel Data",
+         "xAxisName": "Month",
+         "yAxisName": "Distance (in cm)",
+         "theme": "fint"
+     },
+     "data": [{
+             "label": "Jan",
+             "value": "20"
+         },
+         {
+             "label": "Feb",
+             "value": "22"
+         },
+         {
+             "label": "Mar",
+             "value": "19"
+         },
+         {
+             "label": "Apr",
+             "value": "10"
+         },
+         {
+             "label": "May",
+             "value": "3"
+         },
+         {
+             "label": "Jun",
+             "value": "-3"
+         },
+         {
+             "label": "Jul",
+             "value": "-2"
+         },
+         {
+             "label": "Aug",
+             "value": "0"
+         },
+         {
+             "label": "Sep",
+             "value": "10"
+         },
+         {
+             "label": "Oct",
+             "value": "20"
+         },
+         {
+             "label": "Nov",
+             "value": "27"
+         },
+         {
+             "label": "Dec",
+             "value": "33"
+         }
+     ]
+ }

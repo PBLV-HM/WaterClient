@@ -1,0 +1,59 @@
+{
+    "groups": [{
+            "id": "12764",
+            "userid": "6324683",
+            "name": "Gruppe 1",
+            "state": "aktiv",
+            "devices": [{
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 1"
+                },
+                {
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 2"
+                }
+            ],
+            "devsNotInGroup": [{
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 1"
+                },
+                {
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 2"
+                }
+            ]
+        },
+        {
+            "id": "43534",
+            "userid": "6324683",
+            "name": "Gruppe 2",
+            "state": "aktiv",
+            "devices": [{
+                "id": "1234",
+                "userid": "6324683",
+                "name": "Gerät 3"
+            }]
+        },
+        {
+            "id": "99934",
+            "userid": "6324683",
+            "name": "Gruppe 3",
+            "state": "aktiv",
+            "devices": [{
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 4"
+                },
+                {
+                    "id": "1234",
+                    "userid": "6324683",
+                    "name": "Gerät 5"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,148 @@
+<div class="container">
+    <h1>Gruppenverwaltung</h1>
+
+    <h3>Gruppensuche</h3>
+    <div class="row">
+        <div class="col-sm-4 ">
+            <label>Suche nach Name</label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                <input type="text" class="form-control" placeholder="Gruppen Name eingeben" ng-model="searchGroup.Name">
+            </div>
+        </div>
+        <div class="col-sm-4 ">
+            <label>Suche nach ID</label>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                <input type="text" class="form-control" placeholder="Gruppen ID eingeben" ng-model="searchGroup.Id">
+            </div>
+        </div>
+    </div>
+    <br>
+    <h3>Liste der Gruppen</h3>
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <td class="text-right">
+                    <i class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#addGroup"></i>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="group in groups | filter:{name: searchGroup.Name, id: searchGroup.Id} ">
+                <td>{{group.id}}</td>
+                <td>{{group.name}}</td>
+                <td>{{group.state}}</td>
+                <td class="text-right"><i class="glyphicon glyphicon-pencil " ng-click="selectGroup(group) "></i></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <div ng-show="selectedGroup">
+        <h3>Ausgew&auml;hlte Gruppe bearbeiten</h3>
+        <h4>Gruppendaten</h4>
+        <form>
+            <div class="form-group ">
+                <label for="groupID ">Gruppen ID</label>
+                <input disabled type="text " class="form-control " id="groupID " placeholder="ID eingeben " ng-model="selectedGroup.id ">
+            </div>
+            <div class="form-group ">
+                <label for="groupName ">Ger&auml;te Name</label>
+                <input type="text " class="form-control " id="groupName " placeholder="Name eingeben " ng-model="selectedGroup.name ">
+            </div>
+            <button type="submit " class="btn btn-primary " ng-click="saveGroup()">speichern</button>
+            <button type="submit " class="btn btn-default " ng-click="stopGroup()">abbrechen</button>
+            <button type="submit " class="btn btn-default " ng-click="deleteGroup()">löschen</button>
+        </form>
+        <br>
+        <h4>Gerätezuordnung</h4>
+        <div class="row">
+            <div class="">
+                <table class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <td class="text-right">
+                                <i class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#addDevice"></i>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="device in devices">
+                            <td>{{device.id}}</td>
+                            <td>{{device.name}}</td>
+                            <td class="text-right"><i class="glyphicon glyphicon-remove " ng-click="removeDevice(device, $index) "></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <p>{{msg}}</p>
+
+</div>
+
+<!-- add group modal -->
+<div class="modal fade" id="addGroup" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Neue Gruppe hinzufügen</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group ">
+                        <label for="newGroupName ">Gruppen Name eingeben</label>
+                        <input type="text " class="form-control " id="newGroupName " placeholder="Gruppen Name eingeben " ng-model="newGroup.name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">abbrechen</button>
+                <button type="button" class="btn btn-primary" ng-click="addGroup()">speichern</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- add group modal -->
+<div class="modal fade" id="addDevice" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Geräte der Gruppe hinzufügen</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <td class="text-right">
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="dev in devsNotInGroup">
+                            <td>{{dev.id}}</td>
+                            <td>{{dev.name}}</td>
+                            <td class="text-right"><i class="glyphicon glyphicon-plus " ng-click="addDevice(dev) "></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">abbrechen</button>
+            </div>
+        </div>
+    </div>
+</div>
